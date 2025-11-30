@@ -32,7 +32,7 @@ sidebar:
   mastodon: # Please include your full Mastodon link here.
   hackerrank: # Please provide your HackerRank username.
   leetcode: # Please provide your LeetCode username.
-  pdf: resume.pdf # Add a PDF link here if you want to include a PDF custom version in your resume.
+  pdf: resume-zh.pdf # Add a PDF link here if you want to include a PDF custom version in your resume.
 
   languages:
     title: Languages
@@ -65,12 +65,15 @@ experiences:
     time: 2024 - Present
     company: ICT, CAS, Beijing, advised by Prof. Fei Sun
     details: |
-        - Knowledge Editing
         - Knowledge Memory and Update of LLMs
+        - Trustworthy LLMs
 
 certifications:
   title: Awards
   list:
+  - name: National Scholarship for Undergraduates
+    start: 2025
+    organization: Ministry of Education of the People's Republic of China
   - name: ICPC Asia Kunming Regional Contest (Silver Medal)
     start: 2024
     organization: ICPC Foundation
