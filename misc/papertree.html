@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Research Knowledge Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --leaf-color: #10b981;
+            --bg-color: #f8fafc;
+            --sidebar-width: 480px; /* 稍微加宽侧边栏以便阅读 */
+        }
+
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Inter', sans-serif; background: var(--bg-color); overflow: hidden; }
+        
+        #app { display: flex; height: 100vh; width: 100vw; position: relative; }
+        
+        /* === 左侧图表 === */
+        #chart-container { 
+            flex: 1; height: 100%; position: relative; 
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+        
+        /* 顶部状态栏 */
+        .top-bar {
+            position: absolute; top: 20px; left: 20px; z-index: 5;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(4px);
+            padding: 8px 16px; border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;
+            display: flex; gap: 16px; align-items: center;
+        }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #475569; font-weight: 500; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #cbd5e1;}
+        
+        /* === 右侧侧边栏 === */
+        #sidebar {
+            width: 0; height: 100%; background: #fff;
+            box-shadow: -4px 0 25px rgba(0,0,0,0.08); border-left: 1px solid #e2e8f0;
+            display: flex; flex-direction: column; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 20; position: relative;
+        }
+        #sidebar.open { width: var(--sidebar-width); }
+        
+        .sidebar-header {
+            padding: 24px; border-bottom: 1px solid #f1f5f9; background: #fff;
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .badge { background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;}
+        .close-btn { cursor: pointer; color: #94a3b8; transition: 0.2s; font-size: 20px; padding: 5px; }
+        .close-btn:hover { color: #334155; transform: rotate(90deg); background: #f1f5f9; border-radius: 50%; }
+        .group-title { margin: 0; font-size: 20px; font-weight: 700; color: #0f172a; line-height: 1.3; }
+        
+        .sidebar-scroll { flex: 1; overflow-y: auto; padding: 24px; scroll-behavior: smooth; }
+        
+        /* 论文卡片 */
+        .paper-card {
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+            padding: 20px; margin-bottom: 20px; transition: all 0.2s; position: relative;
+        }
+        .paper-card:hover { border-color: var(--primary-color); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); transform: translateY(-2px); }
+        
+        .p-id { 
+            display: inline-block; font-family: 'Monaco', monospace; font-size: 11px; 
+            background: #f1f5f9; color: #64748b; padding: 2px 6px; border-radius: 4px; margin-bottom: 8px; 
+        }
+        .p-title { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 10px; line-height: 1.5; }
+        .p-abs { font-size: 14px; color: #475569; line-height: 1.6; text-align: justify; }
+        
+        .p-actions {
+            margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e2e8f0;
+            display: flex; gap: 10px;
+        }
+        .btn-action {
+            font-size: 12px; color: #64748b; text-decoration: none; display: flex; align-items: center; gap: 4px;
+            padding: 6px 12px; border-radius: 6px; background: #f8fafc; transition: 0.2s;
+        }
+        .btn-action:hover { background: #e0e7ff; color: var(--primary-color); }
+
+        /* 上传层 */
+        #upload-overlay {
+            position: absolute; inset: 0; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px);
+            display: flex; justify-content: center; align-items: center; z-index: 50;
+        }
+        .upload-box {
+            background: white; padding: 40px; border-radius: 20px; text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); border: 1px solid #fff;
+        }
+        .btn-upload {
+            background: var(--primary-color); color: white; padding: 12px 28px; border-radius: 10px;
+            border: none; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 20px;
+            transition: 0.2s; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+        }
+        .btn-upload:hover { background: #4338ca; transform: translateY(-1px); }
+
+        /* === ⚠️ Tooltip 样式修正核心 === */
+        /* ECharts Tooltip 实际上是渲染在 DOM 中的，我们可以通过 CSS 强制控制 */
+        .echarts-tooltip-custom {
+            /* 允许文本换行 */
+            white-space: normal !important; 
+            word-wrap: break-word !important;
+            /* 限制最大宽度，防止溢出屏幕 */
+            max-width: 350px !important;
+        }
+        /* 工具栏按钮样式 */
+        .tooltip-action-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 24px; height: 24px; border-radius: 4px; background: #f1f5f9; color: #64748b;
+            margin-left: 6px; cursor: pointer; text-decoration: none; transition: 0.2s;
+        }
+        .tooltip-action-btn:hover { background: #e0e7ff; color: var(--primary-color); }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div id="chart-container">
+        <div class="top-bar">
+            <div class="legend-item"><div class="dot" style="background:var(--primary-color)"></div> Topic Node</div>
+            <div class="legend-item"><div class="dot" style="background:var(--leaf-color)"></div> Paper Group</div>
+        </div>
+
+        <div id="upload-overlay">
+            <div class="upload-box">
+                <i class="fa-solid fa-layer-group" style="font-size: 48px; color: var(--primary-color); margin-bottom:15px;"></i>
+                <h2 style="margin:0; color:#1e293b; font-size: 24px;">Research Knowledge Graph</h2>
+                <p style="color:#64748b; margin-top:5px;">Interactive visualization for large-scale literature</p>
+                <button class="btn-upload" onclick="document.getElementById('file-input').click()">
+                    <i class="fa-solid fa-upload" style="margin-right:8px"></i> Load JSON
+                </button>
+                <input type="file" id="file-input" accept=".json" style="display:none" />
+            </div>
+        </div>
+    </div>
+
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <div class="header-top">
+                <span class="badge">Leaf Topic</span>
+                <div class="close-btn" onclick="closeSidebar()"><i class="fa-solid fa-times"></i></div>
+            </div>
+            <h3 class="group-title" id="side-title">Select a node...</h3>
+        </div>
+        <div class="sidebar-scroll" id="paper-list"></div>
+    </div>
+</div>
+
+<script>
+    let myChart = null;
+
+    // 全局搜索函数，供 Tooltip 中的 HTML 调用
+    window.searchPaper = function(title) {
+        const query = encodeURIComponent(title);
+        window.open(`https://scholar.google.com/scholar?q=${query}`, '_blank');
+    };
+
+    window.copyTitle = function(title, btn) {
+        navigator.clipboard.writeText(title).then(() => {
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            setTimeout(() => { btn.innerHTML = originalIcon; }, 1500);
+        });
+    };
+
+    document.getElementById('file-input').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const json = JSON.parse(event.target.result);
+                document.getElementById('upload-overlay').style.display = 'none';
+                initChart(json);
+            } catch (err) { alert('Invalid JSON format'); }
+        };
+        reader.readAsText(file);
+    });
+
+    function initChart(data) {
+        const dom = document.getElementById('chart-container');
+        myChart = echarts.init(dom);
+
+        const option = {
+            tooltip: {
+                trigger: 'item',
+                triggerOn: 'mousemove', // 仍然是鼠标移动触发
+                enterable: true,        // [关键] 允许鼠标进入 Tooltip 区域
+                confine: true,          // [关键] 限制在 Canvas 区域内，防止溢出屏幕
+                hideDelay: 200,         // [关键] 增加消失延迟，防止鼠标移动时 Tooltip 闪烁
+                
+                // 样式设置
+                backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                borderColor: '#e2e8f0',
+                borderWidth: 1,
+                padding: 0, 
+                textStyle: { color: '#334155', fontSize: 13 },
+                extraCssText: 'box-shadow: 0 10px 30px -5px rgba(0,0,0,0.15); border-radius: 12px; pointer-events: auto;', // pointer-events 允许点击内部按钮
+                
+                // 给 CSS 选择器用的类名，用于强制控制宽度
+                className: 'echarts-tooltip-custom', 
+
+                formatter: function (params) {
+                    const d = params.data;
+                    const isLeaf = d.papers && d.papers.length > 0;
+                    
+                    // 1. 中间节点 (Topic)
+                    if (!isLeaf) {
+                        return `
+                            <div style="padding: 12px 16px; border-bottom: 1px solid #f1f5f9; background: #f8fafc; border-radius: 12px 12px 0 0;">
+                                <div style="font-weight:700; color:#4f46e5; font-size:14px;">${params.name}</div>
+                            </div>
+                            <div style="padding: 10px 16px; font-size:12px; color:#64748b;">
+                                <div style="margin-bottom:4px"><i class="fa-solid fa-folder-tree" style="width:16px"></i> ${d.children ? d.children.length : 0} sub-topics</div>
+                                <div><i class="fa-solid fa-file-lines" style="width:16px"></i> Total ${d.count || 0} papers</div>
+                            </div>
+                        `;
+                    }
+
+                    // 2. 叶子节点 (Papers Preview)
+                    let papersHtml = '';
+                    if (d.papers) {
+                        d.papers.slice(0, 3).forEach((p, i) => {
+                            // 转义单引号防止 JS 报错
+                            const safeTitle = p.title.replace(/'/g, "&apos;");
+                            
+                            papersHtml += `
+                                <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #f1f5f9; display:flex; gap:8px; align-items:start;">
+                                    <div style="font-weight:600; font-size:11px; color:#94a3b8; padding-top:2px;">${i+1}.</div>
+                                    <div style="flex:1; min-width:0;">
+                                        <div style="font-weight:600; font-size:13px; color:#334155; line-height:1.4; margin-bottom:4px; user-select:text;">${p.title}</div>
+                                        <div style="display:flex; gap:4px;">
+                                            <!-- Google Scholar Search Button -->
+                                            <div title="Search on Scholar" class="tooltip-action-btn" onclick="window.searchPaper('${safeTitle}')">
+                                                <i class="fa-solid fa-magnifying-glass" style="font-size:11px;"></i>
+                                            </div>
+                                            <!-- Copy Button -->
+                                            <div title="Copy Title" class="tooltip-action-btn" onclick="window.copyTitle('${safeTitle}', this)">
+                                                <i class="fa-regular fa-copy" style="font-size:11px;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        if (d.papers.length > 3) {
+                            papersHtml += `<div style="font-size:11px; color:#94a3b8; text-align:center; padding-top:4px;">And ${d.papers.length - 3} more papers... (Click node to view all)</div>`;
+                        }
+                    }
+
+                    return `
+                        <div style="padding: 12px 16px; background: #ecfdf5; border-bottom: 1px solid #d1fae5; border-radius: 12px 12px 0 0;">
+                            <div style="font-weight:700; color:#059669; font-size:14px; display:flex; align-items:center; gap:8px;">
+                                <i class="fa-solid fa-layer-group"></i> ${params.name}
+                            </div>
+                        </div>
+                        <div style="padding: 12px 16px; max-height:300px; overflow-y:auto;">
+                            ${papersHtml}
+                        </div>
+                    `;
+                }
+            },
+            series: [{
+                type: 'tree',
+                data: [data],
+                top: '5%', bottom: '5%', left: '8%', right: '20%',
+                symbol: (value, params) => params.data.papers ? 'circle' : 'circle',
+                symbolSize: (value, params) => params.data.children ? 20 : 14,
+                itemStyle: { color: '#4f46e5', borderColor: '#fff', borderWidth: 2, shadowBlur: 8, shadowColor: 'rgba(79, 70, 229, 0.3)' },
+                leaves: {
+                    label: { position: 'right', verticalAlign: 'middle', align: 'left', fontSize: 13, color: '#334155' },
+                    itemStyle: { color: '#10b981', borderColor: '#fff', borderWidth: 2, shadowBlur: 8, shadowColor: 'rgba(16, 185, 129, 0.3)' }
+                },
+                lineStyle: { color: '#cbd5e1', width: 1.5, curveness: 0.5 },
+                label: {
+                    position: 'left', verticalAlign: 'middle', align: 'right', fontSize: 13, fontWeight: 600,
+                    color: '#475569', backgroundColor: '#fff', padding: [4,8], borderRadius: 6,
+                    shadowColor: 'rgba(0,0,0,0.1)', shadowBlur: 4, shadowOffsetY: 2
+                },
+                expandAndCollapse: true,
+                animationDuration: 550,
+                initialTreeDepth: 2
+            }]
+        };
+
+        myChart.setOption(option);
+
+        myChart.on('click', function(params) {
+            const d = params.data;
+            if (d.papers && d.papers.length > 0) {
+                showSidebar(d.name, d.papers);
+            }
+        });
+        window.addEventListener('resize', () => myChart.resize());
+    }
+
+    function showSidebar(title, papers) {
+        const sidebar = document.getElementById('sidebar');
+        const list = document.getElementById('paper-list');
+        document.getElementById('side-title').innerText = title;
+        list.innerHTML = '';
+
+        papers.forEach(p => {
+            const safeTitle = p.title.replace(/'/g, "&apos;");
+            const div = document.createElement('div');
+            div.className = 'paper-card';
+            div.innerHTML = `
+                <span class="p-id">ID: ${p.id}</span>
+                <div class="p-title">${p.title}</div>
+                <div class="p-abs">${p.abstract}</div>
+                <div class="p-actions">
+                    <a href="https://scholar.google.com/scholar?q=${encodeURIComponent(p.title)}" target="_blank" class="btn-action">
+                        <i class="fa-solid fa-magnifying-glass"></i> Google Scholar
+                    </a>
+                    <a href="#" onclick="window.copyTitle('${safeTitle}', this); return false;" class="btn-action">
+                        <i class="fa-regular fa-copy"></i> Copy Title
+                    </a>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+        sidebar.classList.add('open');
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+    }
+</script>
+
+</body>
+</html>
