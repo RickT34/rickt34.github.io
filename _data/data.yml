@@ -32,7 +32,7 @@ sidebar:
   mastodon: # Please include your full Mastodon link here.
   hackerrank: # Please provide your HackerRank username.
   leetcode: # Please provide your LeetCode username.
-  pdf: resume-zh.pdf # Add a PDF link here if you want to include a PDF custom version in your resume.
+  pdf: resume-en.pdf # Add a PDF link here if you want to include a PDF custom version in your resume.
 
   languages:
     title: Languages
@@ -56,7 +56,7 @@ education:
     university: University of Chinese Academy of Sciences (UCAS)
     time: 2022 - Present
     details: |
-        - GPA: 3.93/4.00 (Rank 3/78)
+        - Rank 3/87
 
 experiences:
   title: Experiences
@@ -74,6 +74,12 @@ certifications:
   - name: National Scholarship for Undergraduates
     start: 2025
     organization: Ministry of Education of the People's Republic of China
+  - name: ICPC Asia Wuhan Regional Contest (Silver Medal)
+    start: 2025
+    organization: ICPC Foundation
+  - name: CCPC Jinan Regional Contest (Silver Medal)
+    start: 2025
+    organization: CCPC Foundation
   - name: ICPC Asia Kunming Regional Contest (Silver Medal)
     start: 2024
     organization: ICPC Foundation
