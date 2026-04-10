@@ -36,6 +36,12 @@
       <a href="{{ sidebar.website }}" target="_blank">{{ sidebar.website }}</a>
     </li>
     {% endif %}
+    
+    {% if sidebar.googlescholar %}
+    <li class="website"><i class="fa-brands fa-google-scholar"></i>
+      <a href="{{ sidebar.googlescholar }}" target="_blank">{{ sidebar.googlescholar }}</a>
+    </li>
+    {% endif %}
 
     {% if sidebar.linkedin %}
     <li class="linkedin"><i class="fab fa-linkedin"></i>

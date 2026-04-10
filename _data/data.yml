@@ -32,6 +32,7 @@ sidebar:
   mastodon: # Please include your full Mastodon link here.
   hackerrank: # Please provide your HackerRank username.
   leetcode: # Please provide your LeetCode username.
+  googleschalor: https://scholar.google.com/citations?user=KRLvvdoAAAAJ
   pdf: resume-en.pdf # Add a PDF link here if you want to include a PDF custom version in your resume.
 
   languages:
@@ -67,6 +68,18 @@ experiences:
     details: |
         - Knowledge Memory and Update of LLMs
         - Trustworthy LLMs
+
+publications:
+  title: Preprint and Publications
+  papers:
+  - title: "Fine-tuning done right in model editing"
+    authors: "Wanli Yang, Rui Tang, Hongyu Zang, Du Su, Qi Cao, Jingang Wang, Huawei Shen, Xueqi Cheng, Fei Sun"
+    conference: "ICLR 2026 poster"
+    link: "https://arxiv.org/pdf/2509.22072" #
+  - title: "BaseCal: Unsupervised Confidence Calibration via Base Model Signals"
+    authors: "Hexiang Tan, Wanli Yang, Junwei Zhang, Xin Chen, Rui Tang, Du Su, Jingang Wang, Yuanzhuo Wang, Fei Sun, Xueqi Cheng"
+    conference: "ACL 2026 main conference"
+    link: "https://arxiv.org/pdf/2601.03042" #
 
 certifications:
   title: Awards
