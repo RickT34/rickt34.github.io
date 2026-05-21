@@ -56,8 +56,8 @@ education:
   - degree: Dual Degree in Computer Science & Mathematics
     university: University of Chinese Academy of Sciences (UCAS)
     time: 2022 - Present
-    details: |
-        - Rank 3/87
+    # details: |
+        # - Rank 3/87
 
 experiences:
   title: Experiences
