@@ -47,25 +47,32 @@ sidebar:
 career-profile:
   title: About me
   summary: |
-    Hi! I'm a junior student at the University of Chinese Academy of Sciences (UCAS) pursuing a dual degree in C.S. and Math. My academic journey is driven by a passion for bridging theoretical foundations with practical implementations, demonstrated through many projects and competition awards in programming and mathematical modeling.
+    Hi! I'm a first-year master's student at the Institute of Computing Technology, Chinese Academy of Sciences (ICT, CAS), in the State Key Laboratory of AI Safety. I completed my undergraduate studies in Computer Science and Mathematics at the University of Chinese Academy of Sciences (UCAS). My current research interests focus on tool use in LLM agents and LLM uncertainty, alongside knowledge memory and updating in LLMs and trustworthy LLMs.
 
 
 education:
   title: Education
   info:
+  - degree: Master's Student
+    university: Institute of Computing Technology, Chinese Academy of Sciences (ICT, CAS)
+    time: 2026 - Present
+    details: |
+      State Key Laboratory of AI Safety
   - degree: Dual Degree in Computer Science & Mathematics
     university: University of Chinese Academy of Sciences (UCAS)
-    time: 2022 - Present
+    time: 2022 - 2026
     # details: |
         # - Rank 3/87
 
 experiences:
   title: Experiences
   info:
-  - role: Research Intern
+  - role: LLM Research
     time: 2024 - Present
     company: ICT, CAS, Beijing, advised by Prof. Fei Sun
     details: |
+        - Tool Use in LLM Agents
+        - LLM Uncertainty
         - Knowledge Memory and Update of LLMs
         - Trustworthy LLMs
 
@@ -84,6 +91,8 @@ publications:
 certifications:
   title: Awards
   list:
+  - name: Beijing Outstanding Graduate
+    start: 2026
   - name: National Scholarship for Undergraduates
     start: 2025
     organization: Ministry of Education of the People's Republic of China
@@ -127,4 +136,3 @@ projects:
   - title: ComplexDrawer  
     link: "https://github.com/RickT34/ComplexDrawer"  
     tagline: "Mathematical visualization tool for complex number operations"
-
