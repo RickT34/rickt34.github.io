@@ -1,0 +1,46 @@
+{
+  "version": "0.1.1",
+  "runtime": "onnxruntime-web",
+  "runtime_version": "1.30.0",
+  "execution_provider": "wasm",
+  "models": [
+    {
+      "name": "residual-history.onnx",
+      "file": "models/residual-history-94d1edeef260.onnx",
+      "onnx_bytes": 37001863,
+      "sha256": "94d1edeef260e01fabb26b98cd9f90fed395a9a72c82201c94a33aea686551c8",
+      "source_sha256": "04ce7f922fb1cd835e494e07f0e00ead8c43ace6e3a240bf5cd5dbe5521027d6",
+      "size": 19,
+      "architecture": "residual",
+      "channels": 96,
+      "blocks": 20,
+      "validation": {
+        "positions": 16,
+        "greedy_moves_equal": true,
+        "max_logit_error": 0.0001163482666015625
+      },
+      "source_bytes": 2477972324,
+      "stage": "蒸馏+强化学习",
+      "description": "从蒸馏模型继续进行 PPO 训练。"
+    },
+    {
+      "name": "residual-distillation-best.onnx",
+      "file": "models/residual-distillation-best-34174a02db39.onnx",
+      "onnx_bytes": 37001863,
+      "sha256": "34174a02db39e43491555b253c8d5ca49cf1a65421ca48b2f7ff08efef6909e8",
+      "source_sha256": "5116dcf812252b0b76bc0f58f988796909711f27e5da96e079e57fecf568f15e",
+      "size": 19,
+      "architecture": "residual",
+      "channels": 96,
+      "blocks": 20,
+      "validation": {
+        "positions": 16,
+        "greedy_moves_equal": true,
+        "max_logit_error": 0.000385284423828125
+      },
+      "source_bytes": 36994971,
+      "stage": "仅蒸馏",
+      "description": "学习教师给出的落子概率分布。"
+    }
+  ]
+}
