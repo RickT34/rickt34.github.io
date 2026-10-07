@@ -74,3 +74,17 @@ npm ci --prefix web
 生成独立静态目录与同名 ZIP。增加或替换模型时推荐重新打包，让 `models.json` 的模型列表、大小和 SHA256 与文件对应。网站访问者可下载模型权重。
 
 第三方推理库的 MIT 许可证位于 `vendor/LICENSE`。ONNX Runtime Web 的部署要求参见 <https://onnxruntime.ai/docs/tutorials/web/deploy.html>。
+
+## 可选：进一步压缩权重（有损）
+
+默认导出保留 FP32。`scripts/compress_onnx_weights.py` 可以把大权重张量用 FP16 保存，在图中用 Cast 恢复为 FP32 后计算。归一化参数、偏置和小常量保留 FP32，输入输出也仍为 FP32。它不要求浏览器使用 GPU，也不保证减少推理内存或加速计算。
+
+```bash
+.venv/bin/python scripts/compress_onnx_weights.py \
+  dist/gomoku-static-v0.2.0/models/原模型.onnx \
+  --output dist/compact-models/轻量模型.onnx
+```
+
+脚本默认比较 128 个局面（随机合法局面和原策略采样局面各半），输出 `.validation.json`，记录概率误差和改变的贪心落点。已有输出拒绝覆盖。压缩会舍入权重，有限局面对照不等于棋力完全不变；请查看报告，并用目标浏览器验证后再采用。
+
+压缩文件的大小和 SHA256 会变化，部署时须同步更新 `models.json` 的 `file`、`onnx_bytes`、`sha256`，保留原 FP32 文件作为基线。此次 `gomoku-static-v0.2.1-fp16` 是单独的轻量试验包，未替换原 v0.2.0。

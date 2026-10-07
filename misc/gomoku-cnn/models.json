@@ -1,46 +1,66 @@
 {
-  "version": "0.1.1",
+  "version": "0.2.1-fp16",
   "runtime": "onnxruntime-web",
   "runtime_version": "1.30.0",
   "execution_provider": "wasm",
   "models": [
     {
       "name": "residual-history.onnx",
-      "file": "models/residual-history-94d1edeef260.onnx",
-      "onnx_bytes": 37001863,
-      "sha256": "94d1edeef260e01fabb26b98cd9f90fed395a9a72c82201c94a33aea686551c8",
+      "file": "models/residual-history-fp16-c509c1ab887b.onnx",
+      "onnx_bytes": 18567448,
+      "sha256": "c509c1ab887baabb027d1f288d8f3a6abc13d8c4f8f19c127174b0d4cc115ef8",
       "source_sha256": "04ce7f922fb1cd835e494e07f0e00ead8c43ace6e3a240bf5cd5dbe5521027d6",
       "size": 19,
       "architecture": "residual",
       "channels": 96,
       "blocks": 20,
       "validation": {
-        "positions": 16,
-        "greedy_moves_equal": true,
-        "max_logit_error": 0.0001163482666015625
+        "positions": 128,
+        "random_legal_positions": 64,
+        "original_policy_positions": 64,
+        "greedy_agreement": 1.0,
+        "changed_moves": [],
+        "max_logit_error": 0.01959705352783203,
+        "max_probability_error": 0.0008222459376480695,
+        "mean_total_variation": 0.00012179688362246157,
+        "limitation": "Finite position comparison; not a playing-strength evaluation."
       },
       "source_bytes": 2477972324,
       "stage": "蒸馏+强化学习",
-      "description": "从蒸馏模型继续进行 PPO 训练。"
+      "description": "从蒸馏模型继续进行 PPO 训练。",
+      "compression_source_sha256": "94d1edeef260e01fabb26b98cd9f90fed395a9a72c82201c94a33aea686551c8",
+      "weight_storage": "fp16-large-weights",
+      "compute_dtype": "float32",
+      "compression_lossy": true
     },
     {
       "name": "residual-distillation-best.onnx",
-      "file": "models/residual-distillation-best-34174a02db39.onnx",
-      "onnx_bytes": 37001863,
-      "sha256": "34174a02db39e43491555b253c8d5ca49cf1a65421ca48b2f7ff08efef6909e8",
+      "file": "models/residual-distillation-best-fp16-3faa70fb2d08.onnx",
+      "onnx_bytes": 18567448,
+      "sha256": "3faa70fb2d08bd42127c9b63de7b867e1cf616945fc46d626796f1ea2f3288a2",
       "source_sha256": "5116dcf812252b0b76bc0f58f988796909711f27e5da96e079e57fecf568f15e",
       "size": 19,
       "architecture": "residual",
       "channels": 96,
       "blocks": 20,
       "validation": {
-        "positions": 16,
-        "greedy_moves_equal": true,
-        "max_logit_error": 0.000385284423828125
+        "positions": 128,
+        "random_legal_positions": 64,
+        "original_policy_positions": 64,
+        "greedy_agreement": 1.0,
+        "changed_moves": [],
+        "max_logit_error": 0.017206192016601562,
+        "max_probability_error": 0.000583860724180596,
+        "mean_total_variation": 7.058130335317013e-05,
+        "limitation": "Finite position comparison; not a playing-strength evaluation."
       },
       "source_bytes": 36994971,
       "stage": "仅蒸馏",
-      "description": "学习教师给出的落子概率分布。"
+      "description": "学习教师给出的落子概率分布。",
+      "compression_source_sha256": "34174a02db39e43491555b253c8d5ca49cf1a65421ca48b2f7ff08efef6909e8",
+      "weight_storage": "fp16-large-weights",
+      "compute_dtype": "float32",
+      "compression_lossy": true
     }
   ]
 }
