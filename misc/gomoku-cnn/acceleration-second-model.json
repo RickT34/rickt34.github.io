@@ -1,0 +1,93 @@
+{
+  "model": "residual-distillation-best.onnx",
+  "outputs": {
+    "wasm-1": {
+      "runtime": {
+        "requested": "wasm-1",
+        "backend": "wasm",
+        "threads": 1,
+        "software": false,
+        "isolated": true,
+        "note": ""
+      },
+      "scores": [
+        {
+          "action": 180,
+          "score": 0.09500015527009964
+        },
+        {
+          "action": 178,
+          "score": -0.0062556485645473
+        },
+        {
+          "action": 160,
+          "score": 0.20018725097179413
+        },
+        {
+          "action": 198,
+          "score": 0.22337660193443298
+        },
+        {
+          "action": 198,
+          "score": 0.5563322305679321
+        },
+        {
+          "action": 181,
+          "score": 0.8711668252944946
+        },
+        {
+          "action": 181,
+          "score": 0.8770085573196411
+        },
+        {
+          "action": 181,
+          "score": 0.8708406090736389
+        }
+      ]
+    },
+    "webgpu": {
+      "runtime": {
+        "requested": "webgpu",
+        "backend": "webgpu",
+        "threads": 1,
+        "software": false,
+        "isolated": true,
+        "note": ""
+      },
+      "scores": [
+        {
+          "action": 180,
+          "score": 0.09499931335449219
+        },
+        {
+          "action": 178,
+          "score": -0.006256619933992624
+        },
+        {
+          "action": 160,
+          "score": 0.20018601417541504
+        },
+        {
+          "action": 198,
+          "score": 0.22337163984775543
+        },
+        {
+          "action": 198,
+          "score": 0.5563324689865112
+        },
+        {
+          "action": 181,
+          "score": 0.8711660504341125
+        },
+        {
+          "action": 181,
+          "score": 0.8770094513893127
+        },
+        {
+          "action": 181,
+          "score": 0.8708414435386658
+        }
+      ]
+    }
+  }
+}

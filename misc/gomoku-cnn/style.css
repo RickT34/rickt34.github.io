@@ -5,6 +5,9 @@
 .model-meta { color:#365c45; font-size:12px; line-height:1.6; font-weight:600; }
 .model-filename { margin-top:3px; color:#77836e; font-size:10px; line-height:1.5; overflow-wrap:anywhere; }
 #model-description { margin:7px 0 0; color:#6a795f; font-size:11px; line-height:1.7; }
+.runtime-settings { margin-top:12px; }
+.runtime-settings>label { display:block; font-size:11px; color:#7b8673; margin:0 0 8px; }
+#runtime-status { line-height:1.6; overflow-wrap:anywhere; }
 .activity {
   position:fixed;
   z-index:20;
@@ -331,7 +334,7 @@ aside {
   font-size:11px;
   color:#9aa68e;
 }
-.settings>label,#seed-field label,#search-fields>label {
+.settings>label,#seed-field label,#search-fields>label,#temperature-field label {
   display:block;
   font-size:11px;
   color:#7b8673;

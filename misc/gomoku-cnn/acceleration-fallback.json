@@ -1,0 +1,48 @@
+{
+  "loaded": {
+    "requested": "webgpu",
+    "backend": "webgpu",
+    "threads": 1,
+    "software": false,
+    "isolated": true,
+    "note": ""
+  },
+  "after": {
+    "requested": "webgpu",
+    "backend": "wasm",
+    "threads": 1,
+    "software": false,
+    "isolated": true,
+    "note": "GPU 初始化或计算失败，已切换 CPU"
+  },
+  "search": {
+    "action": 181,
+    "score": -0.41214463114738464,
+    "depth": 1,
+    "requested_depth": 1,
+    "timed_out": false,
+    "milliseconds": 460.21000000089407,
+    "config": {
+      "depth": 1,
+      "top_p": 0.9,
+      "top_k": 2,
+      "time_limit": 0
+    },
+    "solved": false,
+    "nodes": 2,
+    "cutoffs": 0,
+    "evaluations": 3,
+    "cache_hits": 1,
+    "tt_hits": 0,
+    "tt_cutoffs": 0,
+    "order_hits": 0,
+    "win_cutoffs": 0,
+    "candidate_cache_hits": 0,
+    "cache_sizes": {
+      "network": 3,
+      "transpositions": 1,
+      "candidates": 1,
+      "ordering": 1
+    }
+  }
+}

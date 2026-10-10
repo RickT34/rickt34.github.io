@@ -1,0 +1,74 @@
+{
+  "warm": {
+    "action": 160,
+    "score": -0.2822524309158325,
+    "depth": 3,
+    "requested_depth": 3,
+    "timed_out": false,
+    "milliseconds": 98.98499999940395,
+    "config": {
+      "depth": 3,
+      "top_p": 0.9,
+      "top_k": 3,
+      "time_limit": 0
+    },
+    "solved": false,
+    "nodes": 18,
+    "cutoffs": 2,
+    "evaluations": 9,
+    "cache_hits": 7,
+    "tt_hits": 1,
+    "tt_cutoffs": 0,
+    "order_hits": 2,
+    "win_cutoffs": 0,
+    "candidate_cache_hits": 4,
+    "cache_sizes": {
+      "network": 28,
+      "transpositions": 27,
+      "candidates": 17,
+      "ordering": 17
+    }
+  },
+  "cold": {
+    "action": 160,
+    "score": -0.2822524309158325,
+    "depth": 3,
+    "requested_depth": 3,
+    "timed_out": false,
+    "milliseconds": 128.91499999910593,
+    "config": {
+      "depth": 3,
+      "top_p": 0.9,
+      "top_k": 3,
+      "time_limit": 0
+    },
+    "solved": false,
+    "nodes": 21,
+    "cutoffs": 2,
+    "evaluations": 13,
+    "cache_hits": 7,
+    "tt_hits": 0,
+    "tt_cutoffs": 0,
+    "order_hits": 1,
+    "win_cutoffs": 0,
+    "candidate_cache_hits": 3,
+    "cache_sizes": {
+      "network": 13,
+      "transpositions": 12,
+      "candidates": 7,
+      "ordering": 7
+    }
+  },
+  "beforeSwitch": {
+    "network": 13,
+    "transpositions": 12,
+    "candidates": 7,
+    "ordering": 7
+  },
+  "afterSwitch": {
+    "network": 0,
+    "transpositions": 0,
+    "candidates": 0,
+    "ordering": 0
+  }
+}

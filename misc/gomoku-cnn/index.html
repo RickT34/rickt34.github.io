@@ -16,7 +16,7 @@
 <main>
   <header class="page-header">
     <div class="brand"><span class="brand-mark" aria-hidden="true">●<i>●</i></span><div><div class="eyebrow">GOMOKU / RL</div><h1>模型试棋室<span class="header-dot">.</span></h1></div></div>
-    <nav class="page-nav" aria-label="页面导航"><a class="github-link" href="https://github.com/RickT34/TRGoChessConv" target="_blank" rel="noopener noreferrer" aria-label="查看 GitHub 源码（新窗口）"><svg viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.65 7.65 0 0 1 8 4.73c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg></a></nav>
+    <a class="github-link" href="https://github.com/RickT34/TRGoChessConv" target="_blank" rel="noopener noreferrer" aria-label="查看 GitHub 源码（新窗口）"><svg viewbox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.65 7.65 0 0 1 8 4.73c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg></a></nav>
   </header>
   <div class="workspace">
     <section class="board-panel" aria-label="对弈区">
@@ -35,17 +35,19 @@
         <div class="model-row"><select id="model"><option value="">正在读取模型…</option></select><button id="refresh" class="icon-button" title="刷新模型列表" aria-label="刷新模型列表">↻</button></div>
         <label>你的执棋</label>
         <div class="segmented" role="group" aria-label="你的执棋"><button class="selected" id="choose-black" aria-pressed="true"><i class="stone black"></i>执黑 · 先手</button><button id="choose-white" aria-pressed="false"><i class="stone white"></i>执白 · 后手</button></div>
-        <label for="mode">模型落子方式</label>
-        <select id="mode"><option value="greedy">最大概率 · 稳定比较</option><option value="sample">概率采样 · 观察变化</option><option value="minimax">Minimax + αβ · 神经网络评分</option></select>
+        <label for="mode">模型落子策略</label>
+        <select id="mode"><option value="greedy">最大概率</option><option value="sample">概率采样</option><option value="minimax">Minimax + αβ · 神经网络评分</option></select>
         <div id="search-fields" hidden>
           <div class="form-pair">
-            <div><label for="search-depth">搜索深度（手）</label><input id="search-depth" type="number" min="1" max="5" step="1" value="1"></div>
-            <div><label for="search-time">软时限（秒）</label><input id="search-time" type="number" min="0" max="30" step="0.5" value="5"></div>
+            <div><label for="search-depth">搜索深度（手）</label><input id="search-depth" type="number" min="1" max="100" step="1" value="100"></div>
+            <div><label for="search-time">软时限（秒）</label><input id="search-time" type="number" min="0" max="30" step="0.5" value="3"></div>
           </div>
           <label for="search-top-p">每层 Top-p（累计策略概率 %）</label>
           <input id="search-top-p" type="number" min="1" max="100" step="1" value="90">
-          <p class="small muted">按合法落点的策略概率从高到低累加，达到阈值即停止；100% 搜索全部落点。额外保留一步成五和防五落点。</p>
-          <p class="small muted">一层是一手棋。至少完成一层，超时使用上一完整深度；0 秒表示不限时。需要带价值头的残差模型。</p>
+          <label for="search-top-k">每层 Top-k（0 为不启用）</label>
+          <input id="search-top-k" type="number" min="0" max="625" step="1" value="5">
+          <p class="small muted">按概率从高到低选取，累计达到 Top-p 或数量达到 Top-k 即停止。k=0 不启用数量限制；p=100% 且 k=0 保留全部落点。</p>
+          <p class="small muted">0 秒表示不限时。</p>
         </div>
         <div id="seed-field" hidden><label for="seed">随机种子</label><input id="seed" type="number" min="0" max="4294967295" step="1" value="0"></div>
         <button id="new-game" class="button primary" disabled>开始新对局 <span>↗</span></button>
@@ -54,18 +56,17 @@
 
       <section class="card analysis">
         <div class="section-heading"><h2>最近一次 AI 决策</h2><span class="section-number">02</span></div>
-        <div id="analysis-empty" class="empty-state">AI 落子后，在这里查看它的选择。</div>
         <div id="analysis-content" hidden>
           <div class="decision-metrics"><div><span>实际落点</span><strong id="ai-coordinate">—</strong></div><div><span id="ai-score-label">落子概率</span><strong id="ai-probability">—</strong></div><div><span>推理耗时</span><strong id="ai-time">—</strong></div></div>
           <p id="search-summary" class="small muted" hidden></p>
           <div class="small muted candidate-label" id="candidate-label">当时最偏好的落点</div><ol id="candidates" class="candidates"></ol>
         </div>
-        <p class="analysis-note" id="analysis-note">概率表示模型偏好，不代表获胜概率。</p>
+        <p class="analysis-note" id="analysis-note">概率表示模型偏好。</p>
       </section>
 
       <section class="card history-card">
         <div class="section-heading"><h2>本局棋谱</h2><span class="section-number" id="history-count">00</span></div>
-        <div id="history" class="history"><div class="empty-state">棋盘上的每一次选择，都会留在这里。</div></div>
+        <div id="history" class="history"></div>
       </section>
     </aside>
   </div>

@@ -13,6 +13,35 @@ modelInfo.className = "model-info";
 modelInfo.hidden = true;
 modelInfo.innerHTML = '<div id="model-meta" class="model-meta"></div><div id="model-filename" class="model-filename"></div><p id="model-description"></p>';
 document.querySelector(".model-row").after(modelInfo);
+const runtimePanel=document.createElement("div");
+runtimePanel.className="runtime-settings";
+runtimePanel.hidden=!backend;
+runtimePanel.innerHTML='<label for="runtime-mode">计算加速</label><select id="runtime-mode">'
+  +'<option value="auto">自动 · 优先 GPU</option><option value="wasm-1">CPU · 单线程</option>'
+  +'<option value="wasm-4">CPU · 多线程（最多 4）</option><option value="webgpu">WebGPU · GPU 优先</option>'
+  +'</select><p id="runtime-status" class="small muted">模型加载后显示实际计算方式。</p>';
+modelInfo.after(runtimePanel);
+if(backend){
+  document.querySelector('label[for="mode"]').textContent="思考模式";
+  $("mode").replaceChildren(new Option("即时输出","instant"),new Option("深度思考","deep"));
+  const field=document.createElement("div");
+  field.id="temperature-field";
+  field.innerHTML='<label for="temperature">采样温度 T（0 为贪心）</label><input id="temperature" type="number" min="0" step="0.1" value="0">'
+    +'<p class="small muted">T 越大越随机，T=0 选择最优落点。即时输出按模型偏好选择，深度思考按搜索评分选择。</p>';
+  $("mode").after(field);
+  $("search-depth").min="0";
+  $("search-depth").value="0";
+  $("search-depth").parentElement.hidden=true;
+  $("search-depth").closest(".form-pair").style.gridTemplateColumns="1fr";
+  $("search-fields").hidden=true;
+}
+
+
+function showRuntime(info) {
+  if(!info)return;
+  const label=info.backend==="webgpu" ? `WebGPU${info.software?"（软件实现）":""}` : `CPU · ${info.threads} 线程`;
+  $("runtime-status").textContent=`当前：${label}${info.note?" · "+info.note:""}`;
+}
 
 function modelSize(bytes) {
   return Number.isFinite(bytes) && bytes > 0 ? `${(bytes / 1024 ** 2).toFixed(1)} MiB` : "";
@@ -21,13 +50,11 @@ function modelSize(bytes) {
 function updateModelInfo() {
   const detail = modelDetails.get($("model").value);
   if (backend) {
-    const option=document.querySelector('#mode option[value="minimax"]');
-    if (option) {
-      option.disabled=detail?.has_value !== true;
-      option.title=option.disabled ? "此模型不支持价值搜索" : "";
-      if (option.disabled && $("mode").value === "minimax") $("mode").value="greedy";
-      $("mode").onchange?.();
-    }
+    const option=$("mode").querySelector('option[value="deep"]');
+    option.disabled=detail?.has_value!==true;
+    option.title=option.disabled ? "此模型没有价值头，仅支持即时输出" : "";
+    if(option.disabled)$("mode").value="instant";
+    $("mode").onchange?.();
   }
   modelInfo.hidden = !detail;
   if (!detail) {
@@ -71,6 +98,7 @@ function showActivity({label, detail = "", loaded, total}) {
 }
 
 backend?.setProgressHandler?.(showActivity);
+backend?.setRuntimeHandler?.(showRuntime);
 backend?.setStateHandler?.(result => {
   game = result;
   render({pending:true});
@@ -123,12 +151,14 @@ async function acceptPosition(result) {
 }
 
 function controls() {
-  for (const id of ["model", "mode", "seed", "refresh", "choose-black", "choose-white", "search-depth", "search-time", "search-top-p"])
+  for (const id of ["model", "mode", "seed", "refresh", "choose-black", "choose-white", "search-depth", "search-time", "search-top-p", "search-top-k"])
     $(id).disabled = busy;
   $("new-game").disabled = busy || !availableModels.length;
   $("undo").disabled = busy || !game?.can_undo;
   $("export").disabled = busy || !game?.history.length;
   $("heatmap").disabled = busy;
+  $("runtime-mode").disabled = busy;
+  if(backend)$("temperature").disabled=busy;
 }
 
 async function run(task, status = "模型思考中…") {
@@ -196,9 +226,11 @@ async function newGame() {
     throw new Error("随机种子须为 0 到 4294967295 的整数");
   await acceptPosition(await api("/api/new", {
     session: game?.session, model: $("model").value,
-    human, mode: $("mode").value, seed,
-    ...($("mode").value === "minimax" ? {search: {
-      depth: Number($("search-depth").value), top_p: Number($("search-top-p").value) / 100,
+    human, mode: backend ? "unified" : $("mode").value, seed,
+    ...(backend ? {runtime:$("runtime-mode").value,temperature:Number($("temperature").value)} : {}),
+    ...(backend || $("mode").value === "minimax" ? {search: {
+      depth: backend ? ($("mode").value==="deep" ? 100 : 0) : Number($("search-depth").value), top_p: Number($("search-top-p").value) / 100,
+      top_k: Number($("search-top-k").value),
       time_limit: Number($("search-time").value),
     }} : {}),
   }));
@@ -234,7 +266,7 @@ function render({pending = false} = {}) {
   $("status").textContent = game.done ? game.winner === 0 ? "和棋，势均力敌"
     : game.winner === game.human ? "你赢了，漂亮的一局" : "AI 获胜，再试一种下法"
     : game.to_play === game.human ? "轮到你落子" : "AI 正在思考…";
-  const modeLabel = game.mode === "minimax" ? `Minimax + αβ · ${game.search.depth} 层 · Top-p ${(game.search.top_p * 100).toFixed(0)}%${game.search.top_p < 1 ? " · 近似搜索" : ""}`
+  const modeLabel = backend ? `T=${game.temperature} · ${game.search.depth===0 ? "即时输出" : `深度思考 · ${game.search.depth} 层 · Top-p ${game.search.top_p*100}% · Top-k ${game.search.top_k || "不限"}`}` : game.mode === "minimax" ? `Minimax + αβ · ${game.search.depth} 层 · Top-p ${(game.search.top_p * 100).toFixed(0)}%${game.search.top_k ? ` · Top-k ${game.search.top_k}` : ""}${game.search.top_p < 1 || game.search.top_k ? " · 近似搜索" : ""}`
     : game.mode === "greedy" ? "最大概率落子" : "概率采样";
   $("instruction").textContent = `${game.model} · ${modeLabel} · ${game.size} × ${game.size}${game.done ? " · 可以导出棋谱复盘" : " · 点击交叉点落子"}`;
   $("heatmap-note").textContent = $("heatmap").checked
@@ -243,7 +275,7 @@ function render({pending = false} = {}) {
       : `热力图：当前行棋方（${game.to_play === 1 ? "黑棋" : "白棋"} / 你）的策略头偏好，非搜索评分；颜色越深，概率越高。`
     : "连续五子或以上获胜，无禁手。末手以绿色圆环标记。";
   const aiMove = game.history.findLast((move) => move.decision);
-  $("analysis-empty").hidden = !!aiMove;
+  if($("analysis-empty"))$("analysis-empty").hidden = !!aiMove;
   $("analysis-content").hidden = !aiMove;
   if (aiMove) {
     const decision = aiMove.decision;
@@ -252,7 +284,7 @@ function render({pending = false} = {}) {
     $("ai-score-label").textContent = search ? "搜索评分" : "落子概率";
     $("ai-probability").textContent = search ? search.score.toFixed(3) : percent(decision.probability);
     $("search-summary").hidden = !search;
-    if (search) $("search-summary").textContent = `完成 ${search.depth}/${search.requested_depth} 层 · ${search.nodes} 节点 · ${search.cutoffs} 次剪枝 · ${search.evaluations} 次网络评估${search.timed_out ? " · 达到时限，采用上一完整深度" : ""}`;
+    if (search) $("search-summary").textContent = `完成 ${search.depth}/${search.requested_depth} 层 · ${search.nodes} 节点 · ${search.cutoffs} 次剪枝 · ${search.evaluations} 次网络评估${backend?` · ${search.cache_hits ?? 0} 次推理复用 · ${search.tt_hits ?? 0} 次置换命中`:""}${search.timed_out ? " · 达到时限，采用上一完整深度" : ""}${search.solved?" · 已达评分上界，提前结束":""}`;
     $("candidate-label").textContent = search ? "搜索前的策略偏好（非搜索排名）" : "当时最偏好的落点";
     $("analysis-note").textContent = search
       ? "评分属于刚落子的 AI：越高越有利，±2 表示当前搜索树的胜负结果；近似搜索可能遗漏分支。价值头评分在 [-1, 1]，不代表胜率。"
@@ -293,9 +325,11 @@ $("choose-black").onclick = () => selectSide(1);
 $("model").onchange = updateModelInfo;
 $("choose-white").onclick = () => selectSide(-1);
 $("mode").onchange = () => {
-  $("seed-field").hidden = $("mode").value !== "sample";
-  $("search-fields").hidden = $("mode").value !== "minimax";
+  $("seed-field").hidden = backend ? Number($("temperature").value)===0 : $("mode").value !== "sample";
+  $("search-fields").hidden = backend ? $("mode").value!=="deep" : $("mode").value !== "minimax";
+  if(backend)$("search-depth").value=$("mode").value==="deep" ? "100" : "0";
 };
+if(backend){$("temperature").oninput=$("mode").onchange;$("mode").onchange();}
 $("heatmap").onchange = () => {
   if (backend && $("heatmap").checked && game && !game.done && !game.probabilities)
     run(loadHeatmap, "正在计算落子概率…");
@@ -335,13 +369,16 @@ run(async () => {
     try {
       accept(await api("/api/state", { session }));
       selectSide(game.human);
-      $("mode").value = game.mode;
+      $("mode").value = backend ? (game.search?.depth>0 ? "deep" : "instant") : game.mode;
       $("seed").value = game.seed;
+      if(backend)$("temperature").value=game.temperature;
+      if(backend)$("runtime-mode").value=game.runtime_request ?? "auto";
       $("mode").onchange();
       if (game.search) {
-        $("search-depth").value = game.search.depth;
+        if(!backend)$("search-depth").value = game.search.depth;
         $("search-time").value = game.search.time_limit;
         $("search-top-p").value = String(game.search.top_p * 100);
+        $("search-top-k").value = game.search.top_k ?? 0;
       }
       if (availableModels.includes(game.model)) $("model").value = game.model;
       updateModelInfo();

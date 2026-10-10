@@ -1,0 +1,422 @@
+{
+  "model": "residual-history.onnx",
+  "sha256": "fd7374ba8ea19db18a1e226a6bd1c1cc1a2c458ac59688bfdb136c165b8f3e32",
+  "isolated": true,
+  "hardware_concurrency": 20,
+  "results": [
+    {
+      "requested": "wasm-1",
+      "runtime": {
+        "requested": "wasm-1",
+        "backend": "wasm",
+        "threads": 1,
+        "software": false,
+        "isolated": true,
+        "note": ""
+      },
+      "inference": {
+        "median_ms": 141.2799999974668,
+        "mean_ms": 141.6387499999255
+      },
+      "samples": 16,
+      "greedy_changes_vs_cpu1": 0,
+      "max_probability_error": 0,
+      "baseline": {
+        "action": 161,
+        "score": -0.3497598469257355,
+        "depth": 3,
+        "requested_depth": 3,
+        "timed_out": false,
+        "milliseconds": 2727.765000000596,
+        "config": {
+          "depth": 3,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 0
+        },
+        "solved": false,
+        "nodes": 31,
+        "cutoffs": 6,
+        "evaluations": 19,
+        "cache_hits": 14,
+        "tt_hits": 0,
+        "tt_cutoffs": 0,
+        "order_hits": 0,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 0,
+        "cache_sizes": {
+          "network": 19,
+          "transpositions": 0,
+          "candidates": 0,
+          "ordering": 0
+        }
+      },
+      "cold": {
+        "action": 161,
+        "score": -0.3497598469257355,
+        "depth": 3,
+        "requested_depth": 3,
+        "timed_out": false,
+        "milliseconds": 2724.980000000447,
+        "config": {
+          "depth": 3,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 0
+        },
+        "solved": false,
+        "nodes": 31,
+        "cutoffs": 5,
+        "evaluations": 19,
+        "cache_hits": 11,
+        "tt_hits": 0,
+        "tt_cutoffs": 0,
+        "order_hits": 1,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 3,
+        "cache_sizes": {
+          "network": 19,
+          "transpositions": 16,
+          "candidates": 11,
+          "ordering": 11
+        }
+      },
+      "warm": {
+        "action": 161,
+        "score": -0.3497598469257355,
+        "depth": 3,
+        "requested_depth": 3,
+        "timed_out": false,
+        "milliseconds": 0.05999999865889549,
+        "config": {
+          "depth": 3,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 0
+        },
+        "solved": false,
+        "nodes": 0,
+        "cutoffs": 0,
+        "evaluations": 0,
+        "cache_hits": 1,
+        "tt_hits": 3,
+        "tt_cutoffs": 0,
+        "order_hits": 1,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 1,
+        "cache_sizes": {
+          "network": 19,
+          "transpositions": 16,
+          "candidates": 11,
+          "ordering": 11
+        }
+      },
+      "budget_one_second": {
+        "action": 181,
+        "score": -0.41214463114738464,
+        "depth": 1,
+        "requested_depth": 100,
+        "timed_out": true,
+        "milliseconds": 1004.765000000596,
+        "config": {
+          "depth": 100,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 1
+        },
+        "solved": false,
+        "nodes": 7,
+        "cutoffs": 0,
+        "evaluations": 7,
+        "cache_hits": 2,
+        "tt_hits": 0,
+        "tt_cutoffs": 0,
+        "order_hits": 0,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 0,
+        "cache_sizes": {
+          "network": 7,
+          "transpositions": 2,
+          "candidates": 2,
+          "ordering": 2
+        }
+      }
+    },
+    {
+      "requested": "wasm-4",
+      "runtime": {
+        "requested": "wasm-4",
+        "backend": "wasm",
+        "threads": 4,
+        "software": false,
+        "isolated": true,
+        "note": ""
+      },
+      "inference": {
+        "median_ms": 41.519999999552965,
+        "mean_ms": 42.18062499980442
+      },
+      "samples": 16,
+      "greedy_changes_vs_cpu1": 0,
+      "max_probability_error": 0,
+      "baseline": {
+        "action": 161,
+        "score": -0.3497598469257355,
+        "depth": 3,
+        "requested_depth": 3,
+        "timed_out": false,
+        "milliseconds": 787.125,
+        "config": {
+          "depth": 3,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 0
+        },
+        "solved": false,
+        "nodes": 31,
+        "cutoffs": 6,
+        "evaluations": 19,
+        "cache_hits": 14,
+        "tt_hits": 0,
+        "tt_cutoffs": 0,
+        "order_hits": 0,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 0,
+        "cache_sizes": {
+          "network": 19,
+          "transpositions": 0,
+          "candidates": 0,
+          "ordering": 0
+        }
+      },
+      "cold": {
+        "action": 161,
+        "score": -0.3497598469257355,
+        "depth": 3,
+        "requested_depth": 3,
+        "timed_out": false,
+        "milliseconds": 783.4250000007451,
+        "config": {
+          "depth": 3,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 0
+        },
+        "solved": false,
+        "nodes": 31,
+        "cutoffs": 5,
+        "evaluations": 19,
+        "cache_hits": 11,
+        "tt_hits": 0,
+        "tt_cutoffs": 0,
+        "order_hits": 1,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 3,
+        "cache_sizes": {
+          "network": 19,
+          "transpositions": 16,
+          "candidates": 11,
+          "ordering": 11
+        }
+      },
+      "warm": {
+        "action": 161,
+        "score": -0.3497598469257355,
+        "depth": 3,
+        "requested_depth": 3,
+        "timed_out": false,
+        "milliseconds": 0.06000000238418579,
+        "config": {
+          "depth": 3,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 0
+        },
+        "solved": false,
+        "nodes": 0,
+        "cutoffs": 0,
+        "evaluations": 0,
+        "cache_hits": 1,
+        "tt_hits": 3,
+        "tt_cutoffs": 0,
+        "order_hits": 1,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 1,
+        "cache_sizes": {
+          "network": 19,
+          "transpositions": 16,
+          "candidates": 11,
+          "ordering": 11
+        }
+      },
+      "budget_one_second": {
+        "action": 161,
+        "score": -0.3497598469257355,
+        "depth": 3,
+        "requested_depth": 100,
+        "timed_out": true,
+        "milliseconds": 1027.0100000016391,
+        "config": {
+          "depth": 100,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 1
+        },
+        "solved": false,
+        "nodes": 44,
+        "cutoffs": 6,
+        "evaluations": 25,
+        "cache_hits": 15,
+        "tt_hits": 0,
+        "tt_cutoffs": 0,
+        "order_hits": 2,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 6,
+        "cache_sizes": {
+          "network": 25,
+          "transpositions": 20,
+          "candidates": 15,
+          "ordering": 14
+        }
+      }
+    },
+    {
+      "requested": "webgpu",
+      "runtime": {
+        "requested": "webgpu",
+        "backend": "webgpu",
+        "threads": 1,
+        "software": false,
+        "isolated": true,
+        "note": ""
+      },
+      "inference": {
+        "median_ms": 10.320000000298023,
+        "mean_ms": 9.769374999916181
+      },
+      "samples": 16,
+      "greedy_changes_vs_cpu1": 0,
+      "max_probability_error": 0.000001008479939446083,
+      "baseline": {
+        "action": 161,
+        "score": -0.34976014494895935,
+        "depth": 3,
+        "requested_depth": 3,
+        "timed_out": false,
+        "milliseconds": 205.94500000029802,
+        "config": {
+          "depth": 3,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 0
+        },
+        "solved": false,
+        "nodes": 31,
+        "cutoffs": 6,
+        "evaluations": 19,
+        "cache_hits": 14,
+        "tt_hits": 0,
+        "tt_cutoffs": 0,
+        "order_hits": 0,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 0,
+        "cache_sizes": {
+          "network": 19,
+          "transpositions": 0,
+          "candidates": 0,
+          "ordering": 0
+        }
+      },
+      "cold": {
+        "action": 161,
+        "score": -0.34976014494895935,
+        "depth": 3,
+        "requested_depth": 3,
+        "timed_out": false,
+        "milliseconds": 216.0949999988079,
+        "config": {
+          "depth": 3,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 0
+        },
+        "solved": false,
+        "nodes": 31,
+        "cutoffs": 5,
+        "evaluations": 19,
+        "cache_hits": 11,
+        "tt_hits": 0,
+        "tt_cutoffs": 0,
+        "order_hits": 1,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 3,
+        "cache_sizes": {
+          "network": 19,
+          "transpositions": 16,
+          "candidates": 11,
+          "ordering": 11
+        }
+      },
+      "warm": {
+        "action": 161,
+        "score": -0.34976014494895935,
+        "depth": 3,
+        "requested_depth": 3,
+        "timed_out": false,
+        "milliseconds": 0.07499999925494194,
+        "config": {
+          "depth": 3,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 0
+        },
+        "solved": false,
+        "nodes": 0,
+        "cutoffs": 0,
+        "evaluations": 0,
+        "cache_hits": 1,
+        "tt_hits": 3,
+        "tt_cutoffs": 0,
+        "order_hits": 1,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 1,
+        "cache_sizes": {
+          "network": 19,
+          "transpositions": 16,
+          "candidates": 11,
+          "ordering": 11
+        }
+      },
+      "budget_one_second": {
+        "action": 181,
+        "score": -0.399899959564209,
+        "depth": 5,
+        "requested_depth": 100,
+        "timed_out": true,
+        "milliseconds": 1009.0850000008941,
+        "config": {
+          "depth": 100,
+          "top_p": 0.9,
+          "top_k": 3,
+          "time_limit": 1
+        },
+        "solved": false,
+        "nodes": 206,
+        "cutoffs": 42,
+        "evaluations": 100,
+        "cache_hits": 54,
+        "tt_hits": 4,
+        "tt_cutoffs": 0,
+        "order_hits": 15,
+        "win_cutoffs": 0,
+        "candidate_cache_hits": 53,
+        "cache_sizes": {
+          "network": 100,
+          "transpositions": 110,
+          "candidates": 56,
+          "ordering": 56
+        }
+      }
+    }
+  ]
+}
