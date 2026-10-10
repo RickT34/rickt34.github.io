@@ -1,0 +1,14 @@
+[
+  {
+    "model": "residual-history.onnx",
+    "positions": 8,
+    "greedyEqual": 8,
+    "maxProbabilityError": 0.0002867987946192363
+  },
+  {
+    "model": "residual-distillation-best.onnx",
+    "positions": 8,
+    "greedyEqual": 8,
+    "maxProbabilityError": 0.00003060474259819479
+  }
+]

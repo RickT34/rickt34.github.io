@@ -1,8 +1,6 @@
 const $ = (id) => document.getElementById(id);
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const backend = window.gomokuBackend;
-// 静态 ONNX 发布版目前只导出策略头，不提供价值搜索。
-if (backend) document.querySelector('#mode option[value="minimax"]')?.remove();
 const sessionKey = backend ? "gomoku-static-session" : "gomoku-session";
 let game = null;
 let busy = false;
@@ -22,6 +20,15 @@ function modelSize(bytes) {
 
 function updateModelInfo() {
   const detail = modelDetails.get($("model").value);
+  if (backend) {
+    const option=document.querySelector('#mode option[value="minimax"]');
+    if (option) {
+      option.disabled=detail?.has_value !== true;
+      option.title=option.disabled ? "此模型不支持价值搜索" : "";
+      if (option.disabled && $("mode").value === "minimax") $("mode").value="greedy";
+      $("mode").onchange?.();
+    }
+  }
   modelInfo.hidden = !detail;
   if (!detail) {
     $("model").removeAttribute("aria-describedby");
@@ -64,6 +71,10 @@ function showActivity({label, detail = "", loaded, total}) {
 }
 
 backend?.setProgressHandler?.(showActivity);
+backend?.setStateHandler?.(result => {
+  game = result;
+  render({pending:true});
+});
 
 const coordinate = (action, size = game.size) => {
   const row = Math.floor(action / size), col = action % size;
@@ -95,12 +106,29 @@ function accept(result) {
   else sessionStorage.setItem(sessionKey, game.session);
 }
 
+async function loadHeatmap() {
+  if (!backend || !$("heatmap").checked || !game || game.done || game.probabilities) return;
+  try {
+    accept(await api("/api/probabilities", {session:game.session, version:game.version}));
+  } catch (error) {
+    $("heatmap").checked = false;
+    throw new Error(`概率图计算失败：${error.message}`);
+  }
+}
+
+async function acceptPosition(result) {
+  accept(result);
+  render({pending:true});
+  await loadHeatmap();
+}
+
 function controls() {
   for (const id of ["model", "mode", "seed", "refresh", "choose-black", "choose-white", "search-depth", "search-time", "search-top-p"])
     $(id).disabled = busy;
   $("new-game").disabled = busy || !availableModels.length;
   $("undo").disabled = busy || !game?.can_undo;
   $("export").disabled = busy || !game?.history.length;
+  $("heatmap").disabled = busy;
 }
 
 async function run(task, status = "模型思考中…") {
@@ -166,7 +194,7 @@ async function newGame() {
   const seed = Number($("seed").value);
   if (!Number.isInteger(seed) || seed < 0 || seed >= 2 ** 32)
     throw new Error("随机种子须为 0 到 4294967295 的整数");
-  accept(await api("/api/new", {
+  await acceptPosition(await api("/api/new", {
     session: game?.session, model: $("model").value,
     human, mode: $("mode").value, seed,
     ...($("mode").value === "minimax" ? {search: {
@@ -189,10 +217,10 @@ function drawBoard() {
   $("placeholder").hidden = !!game;
 }
 
-function render() {
+function render({pending = false} = {}) {
   controls();
   drawBoard();
-  if (busy) return;
+  if (busy && !pending) return;
   if (!game) {
     $("status").textContent = "准备开始一局";
     return;
@@ -205,12 +233,13 @@ function render() {
   $("turn-badge").textContent = game.done ? "本局结束" : `你执${humanBlack ? "黑" : "白"}`;
   $("status").textContent = game.done ? game.winner === 0 ? "和棋，势均力敌"
     : game.winner === game.human ? "你赢了，漂亮的一局" : "AI 获胜，再试一种下法"
-    : "轮到你落子";
+    : game.to_play === game.human ? "轮到你落子" : "AI 正在思考…";
   const modeLabel = game.mode === "minimax" ? `Minimax + αβ · ${game.search.depth} 层 · Top-p ${(game.search.top_p * 100).toFixed(0)}%${game.search.top_p < 1 ? " · 近似搜索" : ""}`
     : game.mode === "greedy" ? "最大概率落子" : "概率采样";
   $("instruction").textContent = `${game.model} · ${modeLabel} · ${game.size} × ${game.size}${game.done ? " · 可以导出棋谱复盘" : " · 点击交叉点落子"}`;
   $("heatmap-note").textContent = $("heatmap").checked
     ? game.done ? "对局结束，已隐藏概率热力图。"
+      : !game.probabilities ? "正在等待当前局面的落子概率…"
       : `热力图：当前行棋方（${game.to_play === 1 ? "黑棋" : "白棋"} / 你）的策略头偏好，非搜索评分；颜色越深，概率越高。`
     : "连续五子或以上获胜，无禁手。末手以绿色圆环标记。";
   const aiMove = game.history.findLast((move) => move.decision);
@@ -243,7 +272,7 @@ function render() {
 
 function playAt(cell) {
   if (!cell || busy || !game || cell.getAttribute("aria-disabled") === "true") return;
-  run(async () => accept(await api("/api/move", {
+  run(async () => acceptPosition(await api("/api/move", {
     session: game.session, version: game.version, action: Number(cell.dataset.action),
   })));
 }
@@ -267,10 +296,14 @@ $("mode").onchange = () => {
   $("seed-field").hidden = $("mode").value !== "sample";
   $("search-fields").hidden = $("mode").value !== "minimax";
 };
-$("heatmap").onchange = render;
+$("heatmap").onchange = () => {
+  if (backend && $("heatmap").checked && game && !game.done && !game.probabilities)
+    run(loadHeatmap, "正在计算落子概率…");
+  else render();
+};
 $("refresh").onclick = () => run(refreshModels, "正在读取模型…");
 $("new-game").onclick = () => run(newGame, "正在准备棋局…");
-$("undo").onclick = () => run(async () => accept(await api("/api/undo", {
+$("undo").onclick = () => run(async () => acceptPosition(await api("/api/undo", {
   session: game.session, version: game.version,
 })), "正在恢复棋局…");
 $("export").onclick = () => run(async () => {
@@ -312,6 +345,7 @@ run(async () => {
       }
       if (availableModels.includes(game.model)) $("model").value = game.model;
       updateModelInfo();
+      try { await loadHeatmap(); } catch (error) { message(error.message); }
       return;
     } catch { sessionStorage.removeItem(sessionKey); }
   }
