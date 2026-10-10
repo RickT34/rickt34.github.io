@@ -39,8 +39,8 @@
         <select id="mode"><option value="greedy">最大概率 · 稳定比较</option><option value="sample">概率采样 · 观察变化</option><option value="minimax">Minimax + αβ · 神经网络评分</option></select>
         <div id="search-fields" hidden>
           <div class="form-pair">
-            <div><label for="search-depth">搜索深度（手）</label><input id="search-depth" type="number" min="1" max="6" step="1" value="2"></div>
-            <div><label for="search-time">软时限（秒）</label><input id="search-time" type="number" min="0" max="30" step="0.5" value="3"></div>
+            <div><label for="search-depth">搜索深度（手）</label><input id="search-depth" type="number" min="1" max="5" step="1" value="1"></div>
+            <div><label for="search-time">软时限（秒）</label><input id="search-time" type="number" min="0" max="30" step="0.5" value="5"></div>
           </div>
           <label for="search-top-p">每层 Top-p（累计策略概率 %）</label>
           <input id="search-top-p" type="number" min="1" max="100" step="1" value="90">
