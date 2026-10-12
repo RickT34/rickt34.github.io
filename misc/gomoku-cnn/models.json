@@ -3,72 +3,62 @@
   "runtime": "onnxruntime-web",
   "runtime_version": "1.30.0",
   "execution_provider": "auto",
+  "execution_providers": [
+    "webgpu",
+    "wasm"
+  ],
   "models": [
     {
       "name": "residual-history.onnx",
-      "file": "models/residual-history-search-fp16-fd7374ba8ea1.onnx",
-      "onnx_bytes": 18588752,
-      "sha256": "fd7374ba8ea19db18a1e226a6bd1c1cc1a2c458ac59688bfdb136c165b8f3e32",
-      "source_sha256": "04ce7f922fb1cd835e494e07f0e00ead8c43ace6e3a240bf5cd5dbe5521027d6",
+      "file": "models/residual-history-fp16-e9395b49a209.onnx",
+      "sha256": "e9395b49a209f44c1aaf3d34a14140d780ec145f54793fc6e5383ac6d510a8a3",
+      "onnx_bytes": 18587819,
+      "source_sha256": "27cbe6e1b6fd9daf2c3344cc0d940e90c7106ad54bc4b6cc9d943bfd4963fa5b",
+      "source_bytes": 9579112506,
       "size": 19,
+      "training_size": 19,
       "architecture": "residual",
       "channels": 96,
       "blocks": 20,
-      "validation": {
-        "positions": 16,
-        "greedy_moves_equal": true,
-        "max_logit_error": 0.0001163482666015625,
-        "max_value_error": 9.834766387939453e-07
-      },
-      "source_bytes": 2477972324,
+      "has_value": true,
       "stage": "蒸馏+强化学习",
       "description": "从蒸馏模型继续进行 PPO 训练。",
-      "compression_source_sha256": "05da3ebf1a579d928ffbbc7c0f3d2365d18c9597c939cc8c7d6b51f4542d4cef",
       "weight_storage": "fp16-large-weights",
       "compute_dtype": "float32",
       "compression_lossy": true,
-      "has_value": true,
       "compression_validation": {
-        "positions": 16,
-        "greedy_equal": 16,
-        "max_value_error": 0.0002015531063079834,
-        "max_logit_error": 0.009122848510742188
+        "positions": 32,
+        "greedy_equal": 32,
+        "max_logit_error": 0.00977325439453125,
+        "max_probability_error": 0.000380233433680377,
+        "max_value_error": 0.00036790966987609863
       }
     },
     {
       "name": "residual-distillation-best.onnx",
-      "file": "models/residual-distillation-best-search-fp16-b85f5082017b.onnx",
-      "onnx_bytes": 18588752,
-      "sha256": "b85f5082017b79905bbf5662212e0ace3b0bea76e5b0dc18919d7a36916283ce",
-      "source_sha256": "5116dcf812252b0b76bc0f58f988796909711f27e5da96e079e57fecf568f15e",
+      "file": "models/residual-distillation-best-fp16-83971a088e0f.onnx",
+      "sha256": "83971a088e0f5ac1a7b70b6d964ad2fc45e4d6950ed160b7fbbcff22924944c6",
+      "onnx_bytes": 18587819,
+      "source_sha256": "b4715cfd80d97e778203f57040fd232dcd3359207fb9400f9a1249d4c663f941",
+      "source_bytes": 36994901,
       "size": 19,
+      "training_size": 19,
       "architecture": "residual",
       "channels": 96,
       "blocks": 20,
-      "validation": {
-        "positions": 16,
-        "greedy_moves_equal": true,
-        "max_logit_error": 0.000385284423828125,
-        "max_value_error": 9.5367431640625e-07
-      },
-      "source_bytes": 36994971,
+      "has_value": true,
       "stage": "仅蒸馏",
       "description": "学习教师给出的落子概率分布。",
-      "compression_source_sha256": "2764c5fd5e8a0821b8e5494c9367ef904af16b0497adee197f19bbdfd75f0cfe",
       "weight_storage": "fp16-large-weights",
       "compute_dtype": "float32",
       "compression_lossy": true,
-      "has_value": true,
       "compression_validation": {
-        "positions": 16,
-        "greedy_equal": 16,
-        "max_value_error": 0.00014847517013549805,
-        "max_logit_error": 0.00803375244140625
+        "positions": 32,
+        "greedy_equal": 32,
+        "max_logit_error": 0.007218360900878906,
+        "max_probability_error": 0.0009397018907266741,
+        "max_value_error": 0.0011389553546905518
       }
     }
-  ],
-  "execution_providers": [
-    "webgpu",
-    "wasm"
   ]
 }
