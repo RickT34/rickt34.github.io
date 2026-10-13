@@ -386,5 +386,5 @@ run(async () => {
       return;
     } catch { sessionStorage.removeItem(sessionKey); }
   }
-  if (availableModels.length) await newGame();
-}, "正在加载模型…");
+  if (!backend && availableModels.length) await newGame();
+}, "正在读取模型列表…");

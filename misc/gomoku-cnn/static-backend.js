@@ -214,8 +214,8 @@ window.gomokuBackend = (() => {
       place(game, move.action, move.decision);
     }
     if (!game.env.done && game.env.to_play !== game.human) throw new Error("棋局记录不完整");
-    await load(entry,game.runtime_request);
-    if (game.search.depth > 0 && !loadedHasValue) throw new Error("此模型没有价值头，无法搜索");
+    // Restoring local history does not need weights. Load them on the next AI turn.
+    if (game.search.depth > 0 && entry.has_value !== true) throw new Error("此模型没有价值头，无法搜索");
     current = game;
     return snapshot(game);
   }
